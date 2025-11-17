@@ -1,11 +1,9 @@
-export default function Card({cardData, handleClick}) {
+export default function Card({pokemon, handleClick}) {
+    const { name, image } = pokemon;
     return (
-        <div className="border">
-            <div>hello</div>
-            <div>hello</div>
-            <div>hello</div>
-            <div>hello</div>
-            <div>hello</div>
+        <div className="border flex flex-col  items-center justify-center">
+            <img src={image}/>
+            <div>{name}</div>
         </div>
     )
 }

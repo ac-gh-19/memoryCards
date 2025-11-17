@@ -36,17 +36,13 @@ function App() {
   return (
     <>
       <Header title="Memory Card Pokemon" currentScore={currentScore} bestScore={bestScore}></Header>
-      <div className="grid grid-cols-5 gap-10 p-10">
-        <Card></Card>
-        <Card></Card>
-        <Card></Card>
-        <Card></Card>
-        <Card></Card>
-        <Card></Card>
-        <Card></Card>
-        <Card></Card>
-        <Card></Card>
-        <Card></Card>
+      <div className="grid gap-10 p-10"
+      style={{gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))"}}>
+        { pokemons != null ? 
+        pokemons.map(pokemon => {
+          return <Card key={pokemon.id} pokemon={pokemon}></Card>
+        })
+       : <div> LOADING </div> }
       </div>
     </>
   )
