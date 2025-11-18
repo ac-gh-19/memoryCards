@@ -12,6 +12,6 @@ export default function Header({ title, currentScore = 0, bestScore = 0 }) {
         <img src={githubIcon} className="w-15 absolute top-5 right-5 headerIcon">
         </img>
       </a>
-    </header>
+    </header> 
   );
 }
