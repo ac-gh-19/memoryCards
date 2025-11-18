@@ -1,7 +1,7 @@
 import shufflePokemon from "./shufflePokemon";
 
 export default function getRandomPokemon(pokemons, numNeeded) {
-    const copy = [...pokemons];
+  const copy = [...pokemons];
 
-    return shufflePokemon(copy).slice(0, numNeeded);
+  return shufflePokemon(copy).slice(0, numNeeded);
 }

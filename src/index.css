@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -13,4 +13,28 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.card {
+  transition: transform 350ms ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.headerIcon {
+  transition: transform 500ms ease;
+}
+
+.headerIcon:hover {
+  transform: rotate(1turn);
+}
+
+button {
+  transition: transform 350ms ease;
+}
+
+button:hover {
+  transform: scale(1.03);
 }
