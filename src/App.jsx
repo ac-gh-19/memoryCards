@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Card from "./components/Card";
+import SelectionScreen from "./components/SelectionScreen";
 import { getPokemonNames, getPokemonDetails } from "./utils/pokemonApi";
 
 function App() {
@@ -8,6 +9,13 @@ function App() {
   const [bestScore, setBestScore] = useState(0)
   const [pokemons, setPokemons] = useState(null);
   const [clickedPokemonIDS, setClickedPokemonIDS] = useState(new Set())
+  const [gameStarted, setGameStarted] = useState(false);
+  const [difficulty, setDifficulty] = useState(0);
+
+  function handleSelectionScreenClick(difficulty) {
+    setDifficulty(difficulty);
+    setGameStarted(true);
+  }
 
   function handleCardClick(pokemonID) {
     if (clickedPokemonIDS.has(pokemonID)) {
@@ -26,6 +34,7 @@ function App() {
   }
 
   useEffect(() => {
+    if (!gameStarted) return;
     async function fetchData() {
       const pokemonNames = await getPokemonNames();
       if (!pokemonNames) return;
@@ -47,18 +56,32 @@ function App() {
     }
 
     fetchData();
-  }, [])
+  }, [gameStarted])
+
+  // useEffect(() => {
+  //   function getDisplay() {
+  //     const seenPokemon = pokemons.filter(pokemon => clickedPokemonIDS.has(pokemon.id));
+  //     const unseenPokemon = pokemons.filter(pokemon => !clickedPokemonIDS.has(pokemon.id))
+  //   }
+  // }, [clickedPokemonIDS, pokemons])
 
   return (
     <>
-      <Header title="Memory Card Pokemon" currentScore={currentScore} bestScore={bestScore}></Header>
-      <div className="grid gap-10 p-10"
-      style={{gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))"}}>
-        { pokemons != null ? 
-        pokemons.map(pokemon => {
-          return <Card key={pokemon.id} pokemon={pokemon} onClick={handleCardClick}></Card>
-        })
-       : <div> LOADING </div> }
+      <div className="h-screen flex flex-col">
+        <Header title="Memory Card Pokemon" currentScore={currentScore} bestScore={bestScore}></Header>
+        { gameStarted && pokemons != null ? 
+          <div className="grid gap-10 p-10"
+            style={{gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))"}}>
+              {
+                pokemons.map(pokemon => {
+                  return <Card key={pokemon.id} pokemon={pokemon} onClick={handleCardClick}></Card>
+                })
+              }
+          </div>
+        : 
+        <div className="h-full justify-center items-center flex mb-20">
+          <SelectionScreen onClick={handleSelectionScreenClick}></SelectionScreen>
+        </div> }
       </div>
     </>
   )
