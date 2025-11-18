@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Card from "./components/Card";
 import SelectionScreen from "./components/SelectionScreen";
 import { getPokemonNames, getPokemonDetails } from "./utils/pokemonApi";
+import getRandomPokemon from "./utils/getRandomPokemon";
 
 function App() {
   const [currentScore, setCurrentScore] = useState(0);
@@ -11,6 +12,7 @@ function App() {
   const [clickedPokemonIDS, setClickedPokemonIDS] = useState(new Set())
   const [gameStarted, setGameStarted] = useState(false);
   const [difficulty, setDifficulty] = useState(0);
+  const [displayOfPokemons, setDisplayOfPokemons] = useState([]);
 
   function handleSelectionScreenClick(difficulty) {
     setDifficulty(difficulty);
@@ -21,10 +23,13 @@ function App() {
     if (clickedPokemonIDS.has(pokemonID)) {
       setCurrentScore(0);
       setPokemons(null);
+      setClickedPokemonIDS(new Set());
+      setGameStarted(false);
       return;
     }
 
     const newClickedPokemonIDS = new Set(clickedPokemonIDS);
+    console.log("newlyCLicked", newClickedPokemonIDS);
     newClickedPokemonIDS.add(pokemonID);
     setClickedPokemonIDS(newClickedPokemonIDS);
     setCurrentScore(currentScore + 1);
@@ -58,12 +63,35 @@ function App() {
     fetchData();
   }, [gameStarted])
 
-  // useEffect(() => {
-  //   function getDisplay() {
-  //     const seenPokemon = pokemons.filter(pokemon => clickedPokemonIDS.has(pokemon.id));
-  //     const unseenPokemon = pokemons.filter(pokemon => !clickedPokemonIDS.has(pokemon.id))
-  //   }
-  // }, [clickedPokemonIDS, pokemons])
+  useEffect(() => {
+    if (!gameStarted || !pokemons) return;
+    function getDisplay() {
+      const NUM_OF_DISPLAY_POKEMONS = 10;
+      const seenPokemon = pokemons.filter(pokemon => clickedPokemonIDS.has(pokemon.id));
+      const unseenPokemon = pokemons.filter(pokemon => !clickedPokemonIDS.has(pokemon.id));
+      const numOfSeenPokemonsNeeded = Math.floor(NUM_OF_DISPLAY_POKEMONS * difficulty);
+      console.log(numOfSeenPokemonsNeeded);
+
+      const display = [];
+      if (seenPokemon.length <= numOfSeenPokemonsNeeded) {
+        display.push(...seenPokemon)
+        console.log("seen pokemon", seenPokemon);
+      } else {
+        const randomSeenPokemon = getRandomPokemon(seenPokemon, numOfSeenPokemonsNeeded);
+        display.push(...randomSeenPokemon);
+      }
+      console.log("WITH SEEN POKEMON", display)
+
+      const numOfUnseenPokemonsNeeded = NUM_OF_DISPLAY_POKEMONS - display.length;
+      const randomUnseenPokemon = getRandomPokemon(unseenPokemon, numOfUnseenPokemonsNeeded);
+      display.push(...randomUnseenPokemon);
+      console.log("WITH UNSEEN POKEMON", display)
+
+      setDisplayOfPokemons(display);
+    }
+
+    getDisplay();
+  }, [clickedPokemonIDS, pokemons, gameStarted, difficulty, currentScore])
 
   return (
     <>
@@ -73,7 +101,7 @@ function App() {
           <div className="grid gap-10 p-10"
             style={{gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))"}}>
               {
-                pokemons.map(pokemon => {
+                displayOfPokemons.map(pokemon => {
                   return <Card key={pokemon.id} pokemon={pokemon} onClick={handleCardClick}></Card>
                 })
               }
