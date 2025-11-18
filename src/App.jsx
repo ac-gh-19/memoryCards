@@ -4,6 +4,7 @@ import Card from "./components/Card";
 import SelectionScreen from "./components/SelectionScreen";
 import { getPokemonNames, getPokemonDetails } from "./utils/pokemonApi";
 import getRandomPokemon from "./utils/getRandomPokemon";
+import shufflePokemon from "./utils/shufflePokemon";
 
 function App() {
   const [currentScore, setCurrentScore] = useState(0);
@@ -87,7 +88,7 @@ function App() {
       display.push(...randomUnseenPokemon);
       console.log("WITH UNSEEN POKEMON", display)
 
-      setDisplayOfPokemons(display);
+      setDisplayOfPokemons(shufflePokemon(display));
     }
 
     getDisplay();
@@ -98,8 +99,7 @@ function App() {
       <div className="h-screen flex flex-col">
         <Header title="Memory Card Pokemon" currentScore={currentScore} bestScore={bestScore}></Header>
         { gameStarted && pokemons != null ? 
-          <div className="grid gap-10 p-10"
-            style={{gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))"}}>
+          <div className="grid gap-10 p-10 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {
                 displayOfPokemons.map(pokemon => {
                   return <Card key={pokemon.id} pokemon={pokemon} onClick={handleCardClick}></Card>
